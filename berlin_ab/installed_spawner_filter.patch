@@ -1,0 +1,17 @@
+--- a/race_manager/obstacle_spawner.py
++++ b/race_manager/obstacle_spawner.py
+@@ -112,6 +112,13 @@
+             exclusion_behind=self.get_parameter('exclusion_behind').value,
+             min_severity=self.get_parameter('min_severity').value,
+         )
++        # Completion run: keep obstacles away from the global racing line.
++        import re
++        out = [
++            c for c in out
++            if c.severity <= 0.001
++            and abs(int(c.id.split('d', 1)[1].split('t', 1)[0])) >= 12
++        ]
+         by_side = {k: sum(1 for c in out if c.side == k) for k in ('either', 'LEFT', 'RIGHT')}
+         self.get_logger().info(
+             f'generated {len(out)} candidates — either {by_side["either"]}, '
+
